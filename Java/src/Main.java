@@ -1,11 +1,100 @@
-
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        String s = "arbcba";
-        System.out.println(palindrome2(s, 0, s.length() - 1, 1));
+    }
+    public static int[] solution(int[] A, int F, int M) {
+        // Implement your solution here
+        int totalLength = A.length + F;
+        int sum = totalLength*M;
+        int currentSum = 0;
+        for (int i : A)
+            currentSum += i;
+        int gap = sum - currentSum;
+        if (gap < F || gap > 6*F) return new int[]{0};
+        int[] result = new int[F];
+        Arrays.fill(result, 0);
+        int i = 0;
+        for (int time = 0; time < gap; ++time){
+            result[i] += 1;
+            i = (i+1) % F;
+        }
+        return result;
+    }
+    public static String solution1(int N) {
+        // Implement your solution here
+        int maxFactor = 1;
+        for (int i = 2; i <= 26; ++i){
+            if (N % i == 0)
+                maxFactor = i;
+        }
+        int times = N / maxFactor;
+        StringBuilder result = new StringBuilder();
+        char base = 'a';
+        for (int i = 0; i < maxFactor; ++i){
+            char curr = (char) (base + i);
+            for (int p = 0; p < times; ++p){
+                result.append(curr);
+            }
+        }
+        return result.toString();
     }
 
+    public static int lengthOfLongestSubstring(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        int p1 = 0;
+        int p2 = 0;
+        int max = 0;
+        for(; p2 < s.length(); ++p2){
+            char c = s.charAt(p2);
+            if(map.containsKey(c)){
+                Integer idx = map.get(c);
+                for(; p1 <= idx; ++p1){
+                    map.remove(s.charAt(p1));
+                }
+            }
+            map.put(c, p2);
+            max = Math.max(max, p2-p1+1);
+        }
+        return max;
+    }
+     public static class ListNode {
+         int val;
+         ListNode next;
+         ListNode() {}
+         ListNode(int val) { this.val = val; }
+         ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+     }
+
+    public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        int carry = 0;
+        ListNode dummy = new ListNode(0);
+        ListNode p = dummy;
+        while(l1 != null || l2 != null || carry != 0){
+            int v1 = 0, v2 = 0;
+            v1 = l1 == null? 0: l1.val;
+            v2 = l2 == null? 0: l2.val;
+            p.next = new ListNode((v1+v2+carry)%10);
+            p = p.next;
+            carry = (v1+v2+carry)/10;
+            l1 = l1 == null? null: l1.next;
+            l2 = l2 == null? null: l2.next;
+        }
+        return dummy.next;
+    }
+    public static int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int i = 0; i < nums.length; ++i){
+            int remain = target-nums[i];
+            if(!map.containsKey(nums[i])){
+                map.put(remain, i);
+            }
+            else{
+                return new int[]{map.get(nums[i]), i};
+            }
+        }
+        return new int[]{};
+    }
     /**
      *
      * @param s the string that need to be judged if it is palindrome
@@ -14,6 +103,7 @@ public class Main {
      * @param remain the remaining times of delete characters
      * @return true if s is palindrome with remain times of delete characters opportunities.
      */
+
     public static boolean palindrome(String s, int start, int end, int remain){
         if(s == null || s.length() == 0) return true;
         if(start >= end) return true;       //递归写退出条件
